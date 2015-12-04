@@ -6,7 +6,7 @@ public class Grid : MonoBehaviour {
 	// The Grid itself
 	public static int w = 10;
 	public static int h = 20;
-	public static lado = 1;
+	public static int lado = 1;
 	
 	public static Transform[,] grid1 = new Transform[w, h];
 	public static Transform[,] grid2 = new Transform[w, h];
@@ -18,10 +18,23 @@ public class Grid : MonoBehaviour {
 		                   Mathf.Round(v.y));
 	}
 
-	public static bool insideBorder(Vector2 pos) {
-		return ((int)pos.x >= 0 &&
-		        (int)pos.x < w &&
-		        (int)pos.y >= 0);
+	public static Vector3 roundVec3(Vector3 v) {
+		return new Vector3(Mathf.Round(v.x),
+		                   Mathf.Round(v.y),
+		                   Mathf.Round(v.z));
+	}
+
+	public static bool insideBorder(Vector3 pos) {
+
+		if (lado == 1 || lado == 3) {
+			return ((int)pos.x >= 0 &&
+				(int)pos.x < w &&
+				(int)pos.y >= 0);
+		} else {
+			return ((int)pos.z >= 0 &&
+			        (int)pos.z < w &&
+			        (int)pos.y >= 0);
+		}
 	}
 
 	public static void deleteRow(int y) {
@@ -67,7 +80,7 @@ public class Grid : MonoBehaviour {
 						grid2[x, y] = null;
 						
 						// Update Block position
-						grid[x, y-1].position += new Vector3(0, -1, 0);
+						grid2[x, y-1].position += new Vector3(0, -1, 0);
 					}
 					break;
 				case 3:

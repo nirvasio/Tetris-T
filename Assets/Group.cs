@@ -5,7 +5,7 @@ public class Group : MonoBehaviour {
 
 	float lastFall;
 	
-	public Prefab explosionPrefab;
+	public GameObject explosionPrefab;
 
 	// Use this for initialization
 	void Start () {
@@ -30,7 +30,7 @@ public class Group : MonoBehaviour {
 								Grid.grid1[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 						if(Grid.grid2[(int)v.x, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
@@ -40,9 +40,15 @@ public class Group : MonoBehaviour {
 						}
 						Grid.grid2[(int)v.x, (int)v.y] = child;
 				}
+
+				transformChildToZ(transform);
+				Grid.lado = 2;
+
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 			
-			if(Grid.lado == 2){
+			else if(Grid.lado == 2){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
@@ -61,9 +67,11 @@ public class Group : MonoBehaviour {
 						}
 						Grid.grid3[(int)v.x, (int)v.y] = child;
 				}
+				transformChildToX(transform);
+				Grid.lado = 3;
 			}
 			
-			if(Grid.lado == 3){
+			else if(Grid.lado == 3){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
@@ -82,9 +90,11 @@ public class Group : MonoBehaviour {
 						}					
 						Grid.grid4[(int)v.x, (int)v.y] = child;
 				}
+				transformChildToZMenos(transform);
+				Grid.lado = 4;
 			}
 			
-			if(Grid.lado == 4){
+			else if(Grid.lado == 4){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
@@ -103,6 +113,9 @@ public class Group : MonoBehaviour {
 						}					
 						Grid.grid1[(int)v.x, (int)v.y] = child;
 				}
+
+				transformChildToZMenos(transform);
+				Grid.lado = 1;
 			}
 		}
 		
@@ -198,34 +211,45 @@ public class Group : MonoBehaviour {
 		// Move Left
 		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
 			// Modify position
-			transform.position += new Vector3(-1, transform.position.y, transform.position.z);
+			if(Grid.lado == 1)
+				transform.position += new Vector3(-1, 0, 0);
+			if(Grid.lado == 2)
+				transform.position += new Vector3(0, 0, -1);
 			
 			// See if valid
 			if (isValidGridPos())
 				// It's valid. Update grid.
 				updateGrid();
-			else
-				// It's not valid. revert.
-				transform.position += new Vector3(1, transform.position.y, transform.position.z);
+			else{
+				if(Grid.lado == 1)
+					transform.position += new Vector3(1, 0, 0);
+				if(Grid.lado == 2)
+					transform.position += new Vector3(0, 0, 1);
+			}
 		}
 		
 		// Move Right
 		else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-			// Modify position
-			transform.position += new Vector3(1, transform.position.y, transform.position.z);
+			if(Grid.lado == 1)
+				transform.position += new Vector3(1, 0, 0);
+			if(Grid.lado == 2)
+				transform.position += new Vector3(0, 0, 1);
 			
 			// See if valid
 			if (isValidGridPos())
 				// It's valid. Update grid.
 				updateGrid();
-			else
-				// It's not valid. revert.
-				transform.position += new Vector3(-1, transform.position.y, transform.position.z);
+			else{
+				if(Grid.lado == 1)
+					transform.position += new Vector3(-1, 0, 0);
+				if(Grid.lado == 2)
+					transform.position += new Vector3(0, 0, -1);
+			}
 		}
 		
 		// Rotate
 		else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-			transform.Rotate(transform.rotation.x, transform.rotation.y, -90);
+			transform.Rotate(0, 0, -90);
 			
 			// See if valid
 			if (isValidGridPos())
@@ -233,22 +257,24 @@ public class Group : MonoBehaviour {
 				updateGrid();
 			else
 				// It's not valid. revert.
-				transform.Rotate(transform.rotation.x, transform.rotation.y, 90);
+				transform.Rotate(0, 0, 90);
 		}
 		
 		// Move Downwards and Fall
 		else if (Input.GetKeyDown(KeyCode.DownArrow) ||
 		         Time.time - lastFall >= 1) {
 			// Modify position
-			transform.position += new Vector3(transform.position.x, -1, transform.position.z);
-			
+			transform.position += new Vector3(0, -1, 0);
+
+			Debug.Log(isValidGridPos());
 			// See if valid
 			if (isValidGridPos()) {
+				Debug.Log("ALOHA");
 				// It's valid. Update grid.
 				updateGrid();
 			} else {
 				// It's not valid. revert.
-				transform.position += new Vector3(transform.position.x, 1, transform.position.z);
+				transform.position += new Vector3(0, 1, 0);
 				
 				// Clear filled horizontal lines
 				Grid.deleteFullRows();
@@ -269,9 +295,10 @@ public class Group : MonoBehaviour {
 		switch(Grid.lado){
 			case 1:
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 					
 					// Not inside Border?
+				    //Debug.Log(Grid.insideBorder(v));
 					if (!Grid.insideBorder(v))
 						return false;
 					
@@ -283,21 +310,22 @@ public class Group : MonoBehaviour {
 				return true;
 			case 2:
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 					
+					Debug.Log ("---- " + Grid.insideBorder(v));
 					// Not inside Border?
 					if (!Grid.insideBorder(v))
 						return false;
 					
 					// Block in grid cell (and not part of same group)?
-					if (Grid.grid2[(int)v.x, (int)v.y] != null &&
-						Grid.grid2[(int)v.x, (int)v.y].parent != transform)
+					if (Grid.grid2[(int)v.z, (int)v.y] != null &&
+						Grid.grid2[(int)v.z, (int)v.y].parent != transform)
 						return false;
 				}
 				return true;
 			case 3:
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 					
 					// Not inside Border?
 					if (!Grid.insideBorder(v))
@@ -311,7 +339,7 @@ public class Group : MonoBehaviour {
 				return true;
 			case 4:
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 					
 					// Not inside Border?
 					if (!Grid.insideBorder(v))
@@ -324,6 +352,8 @@ public class Group : MonoBehaviour {
 				}
 				return true;
 		}
+
+		return true;
 	}
 
 	void updateGrid() {
@@ -340,7 +370,7 @@ public class Group : MonoBehaviour {
 				
 				// Add new children to grid
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 					Grid.grid1[(int)v.x, (int)v.y] = child;
 				}
 				break;
@@ -355,8 +385,8 @@ public class Group : MonoBehaviour {
 				
 				// Add new children to grid
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
-					Grid.grid2[(int)v.x, (int)v.y] = child;
+					Vector3 v = Grid.roundVec3(child.position);
+					Grid.grid2[(int)v.z, (int)v.y] = child;
 				}
 				break;
 				
@@ -364,13 +394,13 @@ public class Group : MonoBehaviour {
 				// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
-						if (Grid.grid[x, y] != null)
+						if (Grid.grid3[x, y] != null)
 							if (Grid.grid3[x, y].parent == transform)
 								Grid.grid3[x, y] = null;
 				
 				// Add new children to grid
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 					Grid.grid3[(int)v.x, (int)v.y] = child;
 				}
 				break;
@@ -379,16 +409,61 @@ public class Group : MonoBehaviour {
 				// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
-						if (Grid.grid[x, y] != null)
+						if (Grid.grid4[x, y] != null)
 							if (Grid.grid4[x, y].parent == transform)
 								Grid.grid4[x, y] = null;
 				
 				// Add new children to grid
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
-					Grid.grid4[(int)v.x, (int)v.y] = child;
+					Vector3 v = Grid.roundVec3(child.position);
+					Grid.grid4[(int)v.z, (int)v.y] = child;
 				}
 				break;
 		}		
+	}
+
+	void transformChildToZ(Transform t){
+
+		t.Rotate (new Vector3 (0, -90, 0));
+
+		foreach (Transform child in t) {
+
+
+			Vector3 v = Grid.roundVec3(child.position);
+			v.z = v.z + v.x;
+			v.x = 10;
+			child.position = v;
+
+		}
+	}
+
+	void transformChildToZMenos(Transform t){
+		
+		t.Rotate (new Vector3 (0, 90, 0));
+		
+		foreach (Transform child in t) {
+			
+			
+			Vector3 v = Grid.roundVec3(child.position);
+			v.z = v.z + v.x;
+			v.x = 0;
+			child.position = v;
+			
+		}
+	}
+
+	void transformChildToX(Transform t){
+		
+		t.Rotate (new Vector3 (0, 90, 0));
+		
+		foreach (Transform child in t) {
+			
+			
+			Vector3 v = Grid.roundVec3(child.position);
+			v.x = v.x + v.z;
+			v.z = 10;
+			child.position = v;
+			
+		}
 	}
 }
