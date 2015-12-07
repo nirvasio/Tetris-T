@@ -18,11 +18,13 @@ public class Spawner : MonoBehaviour {
 
 	public void changeSide(){
 		int i = Random.Range (0, groups.Length);
+
 		
 		switch(Grid.lado){
 			
-		case 1:
-			
+		case 1:		
+			Vector3 pos2 = new Vector3(5,14,0);
+			transform.position = pos2;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
 			//Debug.Log ("Instanciou");
@@ -37,13 +39,15 @@ public class Spawner : MonoBehaviour {
 			//Debug.Log ("Instanciou");
 			break;
 		case 3:
-			transform.position = new Vector3(5,14,10);
+			Vector3 pos3 = new Vector3(5,14,10);
+			transform.position = pos3;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
 			//Debug.Log ("Instanciou");
 			break;
 		case 4:
-			transform.position = new Vector3(0,14,10);
+			Vector3 pos4 = new Vector3(0,14,5);
+			transform.position = pos4;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
 			//Debug.Log ("Instanciou");
@@ -53,17 +57,43 @@ public class Spawner : MonoBehaviour {
 	}
 
 	public void spawnNext(){
-		int i = Random.Range (0, groups.Length);
+		//int i = Random.Range (0, groups.Length);
+
+		int i = 3;
+
 		switch(Grid.lado){			
 			case 1:
 					Quaternion q = groups [i].transform.rotation;
+
+			Debug.Log("POSICAO 1" + transform.position.x + " " + transform.position.y + " " + transform.position.z);
+
 					Instantiate (groups [i], transform.position,  q);
 					break;
 
 			case 2:
 					Quaternion q1 = groups [i].transform.rotation;
 					q.y = 270;
-			Instantiate (groups [i], transform.position,  Quaternion.Euler(0, 270, 0));
+
+			Debug.Log("POSICAO 3" + transform.position.x + " " + transform.position.y + " " + transform.position.z);
+
+
+					Instantiate (groups [i], transform.position,  Quaternion.Euler(0, 270, 0));
+					break;
+
+			case 3:
+					Quaternion q2 = groups [i].transform.rotation;
+					q.y = 180;
+
+			Debug.Log("POSICAO 2" + transform.position.x + " " + transform.position.y + " " + transform.position.z);
+						
+
+					Instantiate (groups [i], transform.position,  Quaternion.Euler(0, 180, 0));
+					break;
+
+			case 4:
+					Quaternion q3 = groups [i].transform.rotation;
+					q.y = 90;
+					Instantiate (groups [i], transform.position,  Quaternion.Euler(0, 90, 0));
 					break;
 		}
 

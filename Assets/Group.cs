@@ -12,12 +12,21 @@ public class Group : MonoBehaviour {
 		// Default position not valid? Then it's game over
 		if (!isValidGridPos()) {
 			Debug.Log("GAME OVER");
-			Destroy(gameObject);
+			//Destroy(gameObject);
 		}
 	}
 	
 	void Update() {
-		
+
+		if (Input.GetKeyDown (KeyCode.P)) {
+
+			if(Time.timeScale == 0.0f) Time.timeScale = 1.0f;
+			else Time.timeScale = 0.0f;
+
+		}
+
+		//Debug.Log ("LADOOO - " + Grid.lado);
+
 		// Move TELA Right
 		if (Input.GetKeyDown(KeyCode.D)) {
 			
@@ -57,30 +66,35 @@ public class Group : MonoBehaviour {
 								Grid.grid2[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);	
-						if(Grid.grid3[(int)v.x, (int)v.y] != null){
+					Vector3 v = Grid.roundVec3(child.position);	
+						if(Grid.grid3[(int)v.z, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
 							break;
 						}
-						Grid.grid3[(int)v.x, (int)v.y] = child;
+
+						float tranf = Grid.w - v.z - 1;
+						Grid.grid3[(int)tranf, (int)v.y] = child;
 				}
 				transformChildToX(transform);
 				Grid.lado = 3;
+
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 			
 			else if(Grid.lado == 3){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
-						if (Grid.grid2[x, y] != null)
+						if (Grid.grid3[x, y] != null)
 							if (Grid.grid3[x, y].parent == transform)
 								Grid.grid3[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 						if(Grid.grid4[(int)v.x, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
@@ -92,30 +106,38 @@ public class Group : MonoBehaviour {
 				}
 				transformChildToZMenos(transform);
 				Grid.lado = 4;
+
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 			
 			else if(Grid.lado == 4){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
-						if (Grid.grid2[x, y] != null)
+						if (Grid.grid4[x, y] != null)
 							if (Grid.grid4[x, y].parent == transform)
 								Grid.grid4[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
-						if(Grid.grid1[(int)v.x, (int)v.y] != null){
+					Vector3 v = Grid.roundVec3(child.position);
+						if(Grid.grid1[(int)v.z, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
 							break;
-						}					
-						Grid.grid1[(int)v.x, (int)v.y] = child;
+						}
+
+						float tranf = v.z - Grid.w + 1;
+						Grid.grid1[(int)v.z, (int)v.y] = child;
 				}
 
-				transformChildToZMenos(transform);
+				transformChildToXNormal(transform);
 				Grid.lado = 1;
+
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 		}
 		
@@ -131,7 +153,7 @@ public class Group : MonoBehaviour {
 								Grid.grid1[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);	
+					Vector3 v = Grid.roundVec3(child.position);	
 						if(Grid.grid4[(int)v.x, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
@@ -141,9 +163,15 @@ public class Group : MonoBehaviour {
 						}
 						Grid.grid4[(int)v.x, (int)v.y] = child;
 				}
+
+				transformChildToFour(transform);
+				Grid.lado = 4;
+				
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 			
-			if(Grid.lado == 2){
+			else if(Grid.lado == 2){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
@@ -152,28 +180,34 @@ public class Group : MonoBehaviour {
 								Grid.grid2[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
-						if(Grid.grid1[(int)v.x, (int)v.y] != null){
+					Vector3 v = Grid.roundVec3(child.position);
+						if(Grid.grid1[(int)v.z, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
 							break;
 						}
-						Grid.grid1[(int)v.x, (int)v.y] = child;
+						Grid.grid1[(int)v.z, (int)v.y] = child;
 				}
+
+				transformChildToThree(transform);
+				Grid.lado = 1;
+				
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 			
-			if(Grid.lado == 3){
+			else if(Grid.lado == 3){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
-						if (Grid.grid2[x, y] != null)
+						if (Grid.grid3[x, y] != null)
 							if (Grid.grid3[x, y].parent == transform)
 								Grid.grid3[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
+					Vector3 v = Grid.roundVec3(child.position);
 						if(Grid.grid2[(int)v.x, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
@@ -183,29 +217,40 @@ public class Group : MonoBehaviour {
 						}
 						Grid.grid2[(int)v.x, (int)v.y] = child;
 				}
+
+				transformChildToTwo(transform);
+				Grid.lado = 2;
+				
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
 			
-			if(Grid.lado == 4){
+			else if(Grid.lado == 4){
 			// Remove old children from grid
 				for (int y = 0; y < Grid.h; ++y)
 					for (int x = 0; x < Grid.w; ++x)
-						if (Grid.grid2[x, y] != null)
+						if (Grid.grid4[x, y] != null)
 							if (Grid.grid4[x, y].parent == transform)
 								Grid.grid4[x, y] = null;
 						
 				foreach (Transform child in transform) {
-					Vector2 v = Grid.roundVec2(child.position);
-						if(Grid.grid3[(int)v.x, (int)v.y] != null){
+					Vector3 v = Grid.roundVec3(child.position);
+						if(Grid.grid3[(int)v.z, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
 							break;
 						}
-						Grid.grid3[(int)v.x, (int)v.y] = child;
+						Grid.grid3[(int)v.z, (int)v.y] = child;
 				}
+
+				transformChildToOne(transform);
+				Grid.lado = 3;
+				
+				// Spawn next Group
+				FindObjectOfType<Spawner>().changeSide();
 			}
-			
 		}
 		
 		// Move Left
@@ -215,6 +260,10 @@ public class Group : MonoBehaviour {
 				transform.position += new Vector3(-1, 0, 0);
 			if(Grid.lado == 2)
 				transform.position += new Vector3(0, 0, -1);
+			if(Grid.lado == 3)
+				transform.position += new Vector3(1, 0, 0);
+			if(Grid.lado == 4)
+				transform.position += new Vector3(0, 0, 1);
 			
 			// See if valid
 			if (isValidGridPos())
@@ -223,8 +272,12 @@ public class Group : MonoBehaviour {
 			else{
 				if(Grid.lado == 1)
 					transform.position += new Vector3(1, 0, 0);
-				if(Grid.lado == 2)
+				if(Grid.lado == 2 )
 					transform.position += new Vector3(0, 0, 1);
+				if(Grid.lado == 3 )
+					transform.position += new Vector3(-1, 0, 0);
+				if(Grid.lado == 4 )
+					transform.position += new Vector3(0, 0, -1);
 			}
 		}
 		
@@ -234,6 +287,10 @@ public class Group : MonoBehaviour {
 				transform.position += new Vector3(1, 0, 0);
 			if(Grid.lado == 2)
 				transform.position += new Vector3(0, 0, 1);
+			if(Grid.lado == 3)
+				transform.position += new Vector3(-1, 0, 0);
+			if(Grid.lado == 4 )
+				transform.position += new Vector3(0, 0, -1);
 			
 			// See if valid
 			if (isValidGridPos())
@@ -244,20 +301,32 @@ public class Group : MonoBehaviour {
 					transform.position += new Vector3(-1, 0, 0);
 				if(Grid.lado == 2)
 					transform.position += new Vector3(0, 0, -1);
+				if(Grid.lado == 3)
+					transform.position += new Vector3(1, 0, 0);
+				if(Grid.lado == 4)
+					transform.position += new Vector3(0, 0, 1);
 			}
 		}
 		
 		// Rotate
 		else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-			transform.Rotate(0, 0, -90);
+
+			if(Grid.lado == 1 ||Grid.lado == 3)
+				transform.Rotate(0, 0, -90);
+			else if(Grid.lado == 2 ||Grid.lado == 4)
+				transform.Rotate(0, 0, 90);
 			
 			// See if valid
 			if (isValidGridPos())
 				// It's valid. Update grid.
 				updateGrid();
-			else
-				// It's not valid. revert.
-				transform.Rotate(0, 0, 90);
+			else{
+				if(Grid.lado == 1 ||Grid.lado == 3)
+					transform.Rotate(0, 0, 90);
+				else if(Grid.lado == 2 ||Grid.lado == 4)
+					transform.Rotate(0,0, -90);
+			}
+
 		}
 		
 		// Move Downwards and Fall
@@ -269,7 +338,7 @@ public class Group : MonoBehaviour {
 			Debug.Log(isValidGridPos());
 			// See if valid
 			if (isValidGridPos()) {
-				Debug.Log("ALOHA");
+				Debug.Log("isValidGridPos - Move Down");
 				// It's valid. Update grid.
 				updateGrid();
 			} else {
@@ -296,7 +365,7 @@ public class Group : MonoBehaviour {
 			case 1:
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
-					
+
 					// Not inside Border?
 				    //Debug.Log(Grid.insideBorder(v));
 					if (!Grid.insideBorder(v))
@@ -312,7 +381,6 @@ public class Group : MonoBehaviour {
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
 					
-					Debug.Log ("---- " + Grid.insideBorder(v));
 					// Not inside Border?
 					if (!Grid.insideBorder(v))
 						return false;
@@ -346,8 +414,8 @@ public class Group : MonoBehaviour {
 						return false;
 					
 					// Block in grid cell (and not part of same group)?
-					if (Grid.grid4[(int)v.x, (int)v.y] != null &&
-						Grid.grid4[(int)v.x, (int)v.y].parent != transform)
+					if (Grid.grid4[(int)v.z, (int)v.y] != null &&
+						Grid.grid4[(int)v.z, (int)v.y].parent != transform)
 						return false;
 				}
 				return true;
@@ -423,47 +491,51 @@ public class Group : MonoBehaviour {
 	}
 
 	void transformChildToZ(Transform t){
-
-		t.Rotate (new Vector3 (0, -90, 0));
-
-		foreach (Transform child in t) {
-
-
-			Vector3 v = Grid.roundVec3(child.position);
-			v.z = v.z + v.x;
-			v.x = 10;
-			child.position = v;
-
-		}
+		t.Rotate (new Vector3 (0, -90, 0), Space.World);
+		transform.position = new Vector3 (10, transform.position.y, transform.position.x);
 	}
 
-	void transformChildToZMenos(Transform t){
-		
-		t.Rotate (new Vector3 (0, 90, 0));
-		
-		foreach (Transform child in t) {
-			
-			
-			Vector3 v = Grid.roundVec3(child.position);
-			v.z = v.z + v.x;
-			v.x = 0;
-			child.position = v;
-			
-		}
+	void transformChildToZMenos(Transform t){		
+		t.Rotate (new Vector3 (0, -90, 0), Space.World);
+		transform.position = new Vector3 (0, transform.position.y, transform.position.x);
 	}
 
-	void transformChildToX(Transform t){
-		
-		t.Rotate (new Vector3 (0, 90, 0));
-		
-		foreach (Transform child in t) {
-			
-			
-			Vector3 v = Grid.roundVec3(child.position);
-			v.x = v.x + v.z;
-			v.z = 10;
-			child.position = v;
-			
-		}
+	void transformChildToX(Transform t){		
+		t.Rotate (new Vector3 (0, -90,0), Space.World);
+
+		float tranf = Grid.w - transform.position.z - 1;
+
+		transform.position = new Vector3 (tranf, transform.position.y,10);
+	}
+
+	void transformChildToXNormal(Transform t){		
+		t.Rotate (new Vector3 (0, -90, 0), Space.World);
+
+
+		float tranf = transform.position.z - Grid.w + 1;
+
+		Debug.Log ("TRANNNFFFF " + tranf);
+
+		transform.position = new Vector3 (tranf, transform.position.y,0);
+	}
+
+	void transformChildToOne(Transform t){		
+		t.Rotate (new Vector3 (0, 90, 0), Space.World);
+		transform.position = new Vector3 (transform.position.z, transform.position.y,10);
+	}
+
+	void transformChildToTwo(Transform t){		
+		t.Rotate (new Vector3 (0, 90, 0), Space.World);
+		transform.position = new Vector3 (10, transform.position.y,transform.position.x);
+	}
+
+	void transformChildToThree(Transform t){		
+		t.Rotate (new Vector3 (0, 90, 0), Space.World);
+		transform.position = new Vector3 (transform.position.z, transform.position.y,0);
+	}
+
+	void transformChildToFour(Transform t){		
+		t.Rotate (new Vector3 (0, 90, 0), Space.World);
+		transform.position = new Vector3 (0,transform.position.y,transform.position.x);
 	}
 }
