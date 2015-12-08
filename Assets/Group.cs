@@ -12,7 +12,7 @@ public class Group : MonoBehaviour {
 		// Default position not valid? Then it's game over
 		if (!isValidGridPos()) {
 			Debug.Log("GAME OVER");
-			//Destroy(gameObject);
+			Destroy(gameObject);
 		}
 	}
 	
@@ -130,6 +130,7 @@ public class Group : MonoBehaviour {
 						}
 
 						float tranf = v.z - Grid.w + 1;
+						tranf = Mathf.Abs (tranf);
 						Grid.grid1[(int)v.z, (int)v.y] = child;
 				}
 
@@ -511,10 +512,8 @@ public class Group : MonoBehaviour {
 	void transformChildToXNormal(Transform t){		
 		t.Rotate (new Vector3 (0, -90, 0), Space.World);
 
-
 		float tranf = transform.position.z - Grid.w + 1;
-
-		Debug.Log ("TRANNNFFFF " + tranf);
+		tranf = Mathf.Abs (tranf);
 
 		transform.position = new Vector3 (tranf, transform.position.y,0);
 	}
