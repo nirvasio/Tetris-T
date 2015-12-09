@@ -14,6 +14,9 @@ public class CameraMove : MonoBehaviour {
 	private Vector3[] pointsRight;
 	private Vector3[] pointsLeft;
 
+	private bool rodandoDireita = true;
+	private bool rodandoEsquerda = true;
+
 	void Start ()
 	{
 		i = 0;
@@ -28,17 +31,21 @@ public class CameraMove : MonoBehaviour {
 	void setPathRight(int i,int aux)
 	{	
 
-
 		Debug.Log (i);
 		Debug.Log (aux);
 
 		pointsRight =  new Vector3[] {pos[i].position,pos[aux].position};
 		pathRight = new GoSpline( pointsRight );
-		
+
+		rodandoDireita = false;
+
 		configRight = new GoTweenConfig ()
 			.setEaseType (GoEaseType.SineInOut)
 				.positionPath(pathRight,false,GoLookAtType.TargetTransform,center).position(transform.position,true)
-				.position(transform.position,true);
+				.position(transform.position,true)
+				.onComplete(a => {
+					rodandoDireita = true;
+				});
 	}
 
 	void setPathLeft(int i,int aux)
@@ -51,17 +58,22 @@ public class CameraMove : MonoBehaviour {
 		pointsLeft = new Vector3[] {pos[i].position,pos[aux].position};
 		pathLeft = new GoSpline( pointsLeft );
 
+		rodandoEsquerda = false;
+
 		configLeft = new GoTweenConfig ()
 			.setEaseType (GoEaseType.SineInOut)
 				.positionPath(pathLeft,false,GoLookAtType.TargetTransform,center).position(transform.position,true)
-				.position(transform.position,true);
+				.position(transform.position,true)
+				.onComplete(a => {
+					rodandoEsquerda = true;
+				});
 		
 	}
 
 
 	void Update () 
 	{
-		if (Input.GetKeyDown (KeyCode.D)) {
+		if (Input.GetKeyDown (KeyCode.D) && rodandoDireita) {
 			if(i>3)
 			{
 				i= 0;
@@ -88,7 +100,7 @@ public class CameraMove : MonoBehaviour {
 				} 
 
 		} 
-		if (Input.GetKeyDown (KeyCode.A))
+		if (Input.GetKeyDown (KeyCode.A) && rodandoEsquerda)
 		{
 			if(i>3)
 			{

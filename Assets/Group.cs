@@ -45,6 +45,10 @@ public class Group : MonoBehaviour {
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+
+							Grid.lado = 2;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}
 						Grid.grid2[(int)v.x, (int)v.y] = child;
@@ -67,15 +71,19 @@ public class Group : MonoBehaviour {
 						
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);	
-						if(Grid.grid3[(int)v.z, (int)v.y] != null){
+						float tranf = Grid.w - v.z - 1;
+						tranf = Mathf.Abs (tranf);
+						if(Grid.grid3[(int)tranf, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+
+							Grid.lado = 3;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}
-
-						float tranf = Grid.w - v.z - 1;
 						Grid.grid3[(int)tranf, (int)v.y] = child;
 				}
 				transformChildToX(transform);
@@ -100,6 +108,9 @@ public class Group : MonoBehaviour {
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+							Grid.lado = 4;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}					
 						Grid.grid4[(int)v.x, (int)v.y] = child;
@@ -121,17 +132,19 @@ public class Group : MonoBehaviour {
 						
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
-						if(Grid.grid1[(int)v.z, (int)v.y] != null){
+						float tranf = v.z - Grid.w + 1;
+						tranf = Mathf.Abs (tranf);
+						if(Grid.grid1[(int)tranf, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+							Grid.lado = 1;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
-						}
-
-						float tranf = v.z - Grid.w + 1;
-						tranf = Mathf.Abs (tranf);
-						Grid.grid1[(int)v.z, (int)v.y] = child;
+						}						
+						Grid.grid1[(int)tranf, (int)v.y] = child;
 				}
 
 				transformChildToXNormal(transform);
@@ -155,14 +168,20 @@ public class Group : MonoBehaviour {
 						
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);	
-						if(Grid.grid4[(int)v.x, (int)v.y] != null){
+						float tranf = v.x - Grid.w + 1;
+						tranf = Mathf.Abs (tranf);
+						if(Grid.grid4[(int)tranf, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+							Grid.lado = 4;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}
-						Grid.grid4[(int)v.x, (int)v.y] = child;
+						
+						Grid.grid4[(int)tranf, (int)v.y] = child;
 				}
 
 				transformChildToFour(transform);
@@ -187,6 +206,9 @@ public class Group : MonoBehaviour {
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+							Grid.lado = 1;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}
 						Grid.grid1[(int)v.z, (int)v.y] = child;
@@ -209,14 +231,20 @@ public class Group : MonoBehaviour {
 						
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
-						if(Grid.grid2[(int)v.x, (int)v.y] != null){
+						float tranf = Grid.w - v.x - 1;
+						tranf = Mathf.Abs (tranf);
+						if(Grid.grid2[(int)tranf, (int)v.y] != null){
 							// Instantiate Explosion
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+							Grid.lado = 2;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}
-						Grid.grid2[(int)v.x, (int)v.y] = child;
+						
+						Grid.grid2[(int)tranf, (int)v.y] = child;
 				}
 
 				transformChildToTwo(transform);
@@ -241,6 +269,9 @@ public class Group : MonoBehaviour {
 							Instantiate(explosionPrefab, transform.position, transform.rotation);							
 							// Destroy the gameobject
 							Destroy (gameObject);
+							Grid.lado = 3;
+							FindObjectOfType<Spawner>().changeSide();
+							FindObjectOfType<Spawner>().spawnNext();
 							break;
 						}
 						Grid.grid3[(int)v.z, (int)v.y] = child;
@@ -336,10 +367,10 @@ public class Group : MonoBehaviour {
 			// Modify position
 			transform.position += new Vector3(0, -1, 0);
 
-			Debug.Log(isValidGridPos());
+			//Debug.Log(isValidGridPos());
 			// See if valid
 			if (isValidGridPos()) {
-				Debug.Log("isValidGridPos - Move Down");
+				//Debug.Log("isValidGridPos - Move Down");
 				// It's valid. Update grid.
 				updateGrid();
 			} else {
@@ -525,7 +556,11 @@ public class Group : MonoBehaviour {
 
 	void transformChildToTwo(Transform t){		
 		t.Rotate (new Vector3 (0, 90, 0), Space.World);
-		transform.position = new Vector3 (10, transform.position.y,transform.position.x);
+
+		float tranf = Grid.w - transform.position.x - 1;
+		tranf = Mathf.Abs (tranf);
+
+		transform.position = new Vector3 (10, transform.position.y,tranf);
 	}
 
 	void transformChildToThree(Transform t){		
@@ -535,6 +570,10 @@ public class Group : MonoBehaviour {
 
 	void transformChildToFour(Transform t){		
 		t.Rotate (new Vector3 (0, 90, 0), Space.World);
-		transform.position = new Vector3 (0,transform.position.y,transform.position.x);
+
+		float tranf = transform.position.x - Grid.w + 1;
+		tranf = Mathf.Abs (tranf);
+
+		transform.position = new Vector3 (0,transform.position.y,tranf);
 	}
 }
