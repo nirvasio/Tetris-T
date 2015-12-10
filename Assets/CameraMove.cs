@@ -14,8 +14,10 @@ public class CameraMove : MonoBehaviour {
 	private Vector3[] pointsRight;
 	private Vector3[] pointsLeft;
 
-	private bool rodandoDireita = true;
-	private bool rodandoEsquerda = true;
+	public static bool rodandoDireita = true;
+	public static bool rodandoEsquerda = true;
+
+	private AudioSource audio;
 
 	void Start ()
 	{
@@ -25,7 +27,7 @@ public class CameraMove : MonoBehaviour {
 		config2 = new GoTweenConfig ()
 			.shake(new Vector3(0,0,12),GoShakeType.Position, 1,false);
 		
-
+		audio = GetComponent<AudioSource>();
 	}
 
 	void setPathRight(int i,int aux)
@@ -59,7 +61,6 @@ public class CameraMove : MonoBehaviour {
 		pathLeft = new GoSpline( pointsLeft );
 
 		rodandoEsquerda = false;
-
 		configLeft = new GoTweenConfig ()
 			.setEaseType (GoEaseType.SineInOut)
 				.positionPath(pathLeft,false,GoLookAtType.TargetTransform,center).position(transform.position,true)
@@ -74,6 +75,7 @@ public class CameraMove : MonoBehaviour {
 	void Update () 
 	{
 		if (Input.GetKeyDown (KeyCode.D) && rodandoDireita) {
+			audio.Play ();
 			if(i>3)
 			{
 				i= 0;
@@ -102,6 +104,7 @@ public class CameraMove : MonoBehaviour {
 		} 
 		if (Input.GetKeyDown (KeyCode.A) && rodandoEsquerda)
 		{
+			audio.Play ();
 			if(i>3)
 			{
 				i= 0;

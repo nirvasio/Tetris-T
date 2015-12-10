@@ -23,14 +23,14 @@ public class Spawner : MonoBehaviour {
 		switch(Grid.lado){
 			
 		case 1:		
-			Vector3 pos2 = new Vector3(5,14,0);
+			Vector3 pos2 = new Vector3(5,13,0);
 			transform.position = pos2;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
 			//Debug.Log ("Instanciou");
 			break;
 		case 2:
-			Vector3 pos = new Vector3(10,14,5);
+			Vector3 pos = new Vector3(10,13,5);
 			transform.position = pos;
 			//transform.Rotate (new Vector3 (0, -90, 0));
 			
@@ -39,14 +39,14 @@ public class Spawner : MonoBehaviour {
 			//Debug.Log ("Instanciou");
 			break;
 		case 3:
-			Vector3 pos3 = new Vector3(5,14,10);
+			Vector3 pos3 = new Vector3(4,13,10);
 			transform.position = pos3;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
 			//Debug.Log ("Instanciou");
 			break;
 		case 4:
-			Vector3 pos4 = new Vector3(0,14,5);
+			Vector3 pos4 = new Vector3(0,13,4);
 			transform.position = pos4;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
@@ -74,7 +74,7 @@ public class Spawner : MonoBehaviour {
 					Quaternion q1 = groups [i].transform.rotation;
 					q.y = 270;
 
-			Debug.Log("POSICAO 3" + transform.position.x + " " + transform.position.y + " " + transform.position.z);
+					Debug.Log("POSICAO 3" + transform.position.x + " " + transform.position.y + " " + transform.position.z);
 
 
 					Instantiate (groups [i], transform.position,  Quaternion.Euler(0, 270, 0));

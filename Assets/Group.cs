@@ -7,6 +7,9 @@ public class Group : MonoBehaviour {
 	
 	public GameObject explosionPrefab;
 
+	private AudioSource audio;
+
+
 	// Use this for initialization
 	void Start () {
 		// Default position not valid? Then it's game over
@@ -14,6 +17,8 @@ public class Group : MonoBehaviour {
 			Debug.Log("GAME OVER");
 			Destroy(gameObject);
 		}
+
+		audio = GetComponent<AudioSource>();
 	}
 	
 	void Update() {
@@ -26,9 +31,10 @@ public class Group : MonoBehaviour {
 		}
 
 		//Debug.Log ("LADOOO - " + Grid.lado);
+		Debug.Log ("Rodandooo - " + CameraMove.rodandoEsquerda);
 
 		// Move TELA Right
-		if (Input.GetKeyDown(KeyCode.D)) {
+		if (Input.GetKeyDown(KeyCode.D) && CameraMove.rodandoDireita) {
 			
 			if(Grid.lado == 1){
 			// Remove old children from grid
@@ -156,7 +162,7 @@ public class Group : MonoBehaviour {
 		}
 		
 		// Move TELA Left
-		if (Input.GetKeyDown(KeyCode.A)) {
+		if (Input.GetKeyDown(KeyCode.A) && CameraMove.rodandoEsquerda) {
 			
 			if(Grid.lado == 1){
 			// Remove old children from grid
@@ -311,6 +317,7 @@ public class Group : MonoBehaviour {
 				if(Grid.lado == 4 )
 					transform.position += new Vector3(0, 0, -1);
 			}
+			audio.Play ();
 		}
 		
 		// Move Right
@@ -338,6 +345,7 @@ public class Group : MonoBehaviour {
 				if(Grid.lado == 4)
 					transform.position += new Vector3(0, 0, 1);
 			}
+			audio.Play ();
 		}
 		
 		// Rotate
@@ -358,6 +366,7 @@ public class Group : MonoBehaviour {
 				else if(Grid.lado == 2 ||Grid.lado == 4)
 					transform.Rotate(0,0, -90);
 			}
+			audio.Play ();
 
 		}
 		
@@ -373,6 +382,8 @@ public class Group : MonoBehaviour {
 				//Debug.Log("isValidGridPos - Move Down");
 				// It's valid. Update grid.
 				updateGrid();
+				audio.Play ();
+				//audio.PlayOneShot ((AudioClip)Resources.Load ("265385__b-lamerichs__sound-effects-01-03-2015-8-pops-2"));
 			} else {
 				// It's not valid. revert.
 				transform.position += new Vector3(0, 1, 0);
@@ -393,22 +404,31 @@ public class Group : MonoBehaviour {
 
 	bool isValidGridPos() {
 
+		Debug.Log ("LADO --- " + Grid.lado);
+
 		switch(Grid.lado){
 			case 1:
+				int childint = 0;
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
+					Debug.Log ("child int " + childint);
+					Debug.Log(" FUNÇAO 0 " + child.position.x + "  " + child.position.y + " " + child.position.z);
 
 					// Not inside Border?
-				    //Debug.Log(Grid.insideBorder(v));
+				    Debug.Log(" FUNÇAO 1 " + Grid.insideBorder(v));
 					if (!Grid.insideBorder(v))
 						return false;
 					
+					Debug.Log(" FUNÇAO 2 " + (Grid.grid1[(int)v.x, (int)v.y] != null &&
+				                          Grid.grid1[(int)v.x, (int)v.y].parent != transform));
 					// Block in grid cell (and not part of same group)?
 					if (Grid.grid1[(int)v.x, (int)v.y] != null &&
 						Grid.grid1[(int)v.x, (int)v.y].parent != transform)
 						return false;
+					childint++;
 				}
-				return true;
+				//return true;
+				break;
 			case 2:
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
@@ -422,7 +442,8 @@ public class Group : MonoBehaviour {
 						Grid.grid2[(int)v.z, (int)v.y].parent != transform)
 						return false;
 				}
-				return true;
+				break;
+				//return true;
 			case 3:
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
@@ -436,7 +457,8 @@ public class Group : MonoBehaviour {
 						Grid.grid3[(int)v.x, (int)v.y].parent != transform)
 						return false;
 				}
-				return true;
+				break;
+				//return true;
 			case 4:
 				foreach (Transform child in transform) {
 					Vector3 v = Grid.roundVec3(child.position);
@@ -450,7 +472,8 @@ public class Group : MonoBehaviour {
 						Grid.grid4[(int)v.z, (int)v.y].parent != transform)
 						return false;
 				}
-				return true;
+				//return true;
+				break;
 		}
 
 		return true;
