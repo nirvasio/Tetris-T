@@ -23,7 +23,7 @@ public class Spawner : MonoBehaviour {
 		switch(Grid.lado){
 			
 		case 1:		
-			Vector3 pos2 = new Vector3(5,13,0);
+			Vector3 pos2 = new Vector3(5,13,-1);
 			transform.position = pos2;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
@@ -46,7 +46,7 @@ public class Spawner : MonoBehaviour {
 			//Debug.Log ("Instanciou");
 			break;
 		case 4:
-			Vector3 pos4 = new Vector3(0,13,4);
+			Vector3 pos4 = new Vector3(-1,13,4);
 			transform.position = pos4;
 			//coloca um bloco na posiçao do elemento
 			//Instantiate (groups [i], transform.position, Quaternion.identity);
@@ -57,9 +57,9 @@ public class Spawner : MonoBehaviour {
 	}
 
 	public void spawnNext(){
-		//int i = Random.Range (0, groups.Length);
+		int i = Random.Range (0, groups.Length);
 
-		int i = 3;
+		//int i = 3;
 
 		switch(Grid.lado){			
 			case 1:

@@ -7,6 +7,7 @@ public class Grid : MonoBehaviour {
 	public static int w = 10;
 	public static int h = 20;
 	public static int lado = 1;
+	public static int pontuacao = 0;
 	
 	public static Transform[,] grid1 = new Transform[w, h];
 	public static Transform[,] grid2 = new Transform[w, h];
@@ -110,19 +111,40 @@ public class Grid : MonoBehaviour {
 					if (grid4[x, y] == null)
 						return false;
 			}				
-			
 					
 		return true;
 	}
 
 	public static void deleteFullRows() {
+
+
+		int quantidade = 0;
+		int pontos = 0;
+
 		for (int y = 0; y < h; ++y) {
 			if (isRowFull(y)) {
 				deleteRow(y);
 				decreaseRowsAbove(y+1);
 				--y;
+				pontos += 100;
+				quantidade +=1;
 			}
 		}
+
+		int final = pontos * quantidade;
+
+		if (quantidade == 2) {
+			final = (int)  (final* 1.2);
+		}
+		if (quantidade == 3) {
+			final = (int)  (final* 1.3);
+		}
+		if (quantidade >= 4) {
+			final = (int)  (final* 1.5);
+		}
+
+		pontuacao += final;
+
 	}
 
 }

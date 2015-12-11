@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class CameraMove : MonoBehaviour {
 
@@ -14,8 +15,10 @@ public class CameraMove : MonoBehaviour {
 	private Vector3[] pointsRight;
 	private Vector3[] pointsLeft;
 
-	public static bool rodandoDireita = true;
-	public static bool rodandoEsquerda = true;
+	//public static bool rodandoDireita = true;
+	//public static bool rodandoEsquerda = true;
+
+	Text placar;
 
 	private AudioSource audio;
 
@@ -28,6 +31,8 @@ public class CameraMove : MonoBehaviour {
 			.shake(new Vector3(0,0,12),GoShakeType.Position, 1,false);
 		
 		audio = GetComponent<AudioSource>();
+
+		placar = GameObject.FindWithTag ("Placar").GetComponent<Text>();
 	}
 
 	void setPathRight(int i,int aux)
@@ -39,14 +44,14 @@ public class CameraMove : MonoBehaviour {
 		pointsRight =  new Vector3[] {pos[i].position,pos[aux].position};
 		pathRight = new GoSpline( pointsRight );
 
-		rodandoDireita = false;
+		//rodandoDireita = false;
 
 		configRight = new GoTweenConfig ()
 			.setEaseType (GoEaseType.SineInOut)
 				.positionPath(pathRight,false,GoLookAtType.TargetTransform,center).position(transform.position,true)
 				.position(transform.position,true)
 				.onComplete(a => {
-					rodandoDireita = true;
+					//rodandoDireita = true;
 				});
 	}
 
@@ -60,21 +65,24 @@ public class CameraMove : MonoBehaviour {
 		pointsLeft = new Vector3[] {pos[i].position,pos[aux].position};
 		pathLeft = new GoSpline( pointsLeft );
 
-		rodandoEsquerda = false;
+		//rodandoEsquerda = false;
 		configLeft = new GoTweenConfig ()
 			.setEaseType (GoEaseType.SineInOut)
 				.positionPath(pathLeft,false,GoLookAtType.TargetTransform,center).position(transform.position,true)
 				.position(transform.position,true)
 				.onComplete(a => {
-					rodandoEsquerda = true;
+					//rodandoEsquerda = true;
 				});
 		
 	}
 
 
 	void Update () 
-	{
-		if (Input.GetKeyDown (KeyCode.D) && rodandoDireita) {
+	{	
+		
+		placar.text = "Pontuaçao: " + Grid.pontuacao;
+
+		if (Input.GetKeyDown (KeyCode.D) ) {
 			audio.Play ();
 			if(i>3)
 			{
@@ -102,7 +110,7 @@ public class CameraMove : MonoBehaviour {
 				} 
 
 		} 
-		if (Input.GetKeyDown (KeyCode.A) && rodandoEsquerda)
+		if (Input.GetKeyDown (KeyCode.A))
 		{
 			audio.Play ();
 			if(i>3)

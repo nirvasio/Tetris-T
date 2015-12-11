@@ -1,0 +1,24 @@
+Initialize engine version: 5.2.3f1 (f3d16a1fa2dd)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: Intel(R) HD Graphics 3000 (ID=0x126)
+    Vendor:   Intel
+    VRAM:     1044 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\felip\Documents\GitHub\Tetris-T\tetris_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.054 seconds
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+<RI> Initializing input.
+XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
+<RI> Input initialized.

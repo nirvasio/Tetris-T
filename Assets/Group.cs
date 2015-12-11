@@ -9,6 +9,8 @@ public class Group : MonoBehaviour {
 
 	private AudioSource audio;
 
+	public GameObject gameOver;
+
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +18,7 @@ public class Group : MonoBehaviour {
 		if (!isValidGridPos()) {
 			Debug.Log("GAME OVER");
 			Destroy(gameObject);
+			Application.LoadLevel("CenaG");
 		}
 
 		audio = GetComponent<AudioSource>();
@@ -31,10 +34,10 @@ public class Group : MonoBehaviour {
 		}
 
 		//Debug.Log ("LADOOO - " + Grid.lado);
-		Debug.Log ("Rodandooo - " + CameraMove.rodandoEsquerda);
+//		Debug.Log ("Rodandooo - " + CameraMove.rodandoEsquerda);
 
 		// Move TELA Right
-		if (Input.GetKeyDown(KeyCode.D) && CameraMove.rodandoDireita) {
+		if (Input.GetKeyDown(KeyCode.D) ) {
 			
 			if(Grid.lado == 1){
 			// Remove old children from grid
@@ -162,7 +165,7 @@ public class Group : MonoBehaviour {
 		}
 		
 		// Move TELA Left
-		if (Input.GetKeyDown(KeyCode.A) && CameraMove.rodandoEsquerda) {
+		if (Input.GetKeyDown(KeyCode.A) ) {
 			
 			if(Grid.lado == 1){
 			// Remove old children from grid
@@ -552,7 +555,7 @@ public class Group : MonoBehaviour {
 
 	void transformChildToZMenos(Transform t){		
 		t.Rotate (new Vector3 (0, -90, 0), Space.World);
-		transform.position = new Vector3 (0, transform.position.y, transform.position.x);
+		transform.position = new Vector3 (-1, transform.position.y, transform.position.x);
 	}
 
 	void transformChildToX(Transform t){		
@@ -569,7 +572,7 @@ public class Group : MonoBehaviour {
 		float tranf = transform.position.z - Grid.w + 1;
 		tranf = Mathf.Abs (tranf);
 
-		transform.position = new Vector3 (tranf, transform.position.y,0);
+		transform.position = new Vector3 (tranf, transform.position.y,-1);
 	}
 
 	void transformChildToOne(Transform t){		
@@ -588,7 +591,7 @@ public class Group : MonoBehaviour {
 
 	void transformChildToThree(Transform t){		
 		t.Rotate (new Vector3 (0, 90, 0), Space.World);
-		transform.position = new Vector3 (transform.position.z, transform.position.y,0);
+		transform.position = new Vector3 (transform.position.z, transform.position.y,-1);
 	}
 
 	void transformChildToFour(Transform t){		
@@ -597,6 +600,6 @@ public class Group : MonoBehaviour {
 		float tranf = transform.position.x - Grid.w + 1;
 		tranf = Mathf.Abs (tranf);
 
-		transform.position = new Vector3 (0,transform.position.y,tranf);
+		transform.position = new Vector3 (-1,transform.position.y,tranf);
 	}
 }
